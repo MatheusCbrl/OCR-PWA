@@ -68,7 +68,7 @@
     <div class="container-table container">
       <h1>Arquivos OCR</h1>
       <p>
-        Leitura e identificão de campos em documentos ou fotos.
+        Leitura e identificação de campos em documentos ou fotos.
       </p>
       <div class="content row">
         <div class="col col-10">
@@ -95,6 +95,71 @@
                     }
                 });
             </script>
+
+            <h1>OCR com Google Cloud Vision</h1>
+    <input type="file" id="fileInput">
+    <br>
+    <img id="previewImage" style="max-width: 400px; max-height: 400px;">
+    <br>
+    <button onclick="performOCR()">Realizar OCR</button>
+    <br>
+    <pre id="ocrResult"></pre>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const previewImage = document.getElementById('previewImage');
+        const ocrResultDisplay = document.getElementById('ocrResult');
+
+        fileInput.addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImage.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                previewImage.src = '';
+            }
+        });
+
+        function performOCR() {
+            const base64Image = previewImage.src.split(',')[1];
+
+            fetch('https://vision.googleapis.com/v1/images:annotate?key=SUACHAVEDEAPI', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "requests": [
+                        {
+                            "image": {
+                                "content": base64Image
+                            },
+                            "features": [
+                                {
+                                    "type": "TEXT_DETECTION"
+                                }
+                            ]
+                        }
+                    ]
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.responses && data.responses.length > 0 && data.responses[0].textAnnotations) {
+                    const ocrText = data.responses[0].textAnnotations[0].description;
+                    ocrResultDisplay.textContent = ocrText;
+                } else {
+                    ocrResultDisplay.textContent = 'Não foi possível realizar o OCR.';
+                }
+            })
+            .catch(error => {
+                ocrResultDisplay.textContent = 'Ocorreu um erro na solicitação do OCR: ' + error.message;
+            });
+        }
+    </script>
           </div>
           <div>
             <button
