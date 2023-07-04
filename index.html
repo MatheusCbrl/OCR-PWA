@@ -70,33 +70,6 @@
       <p>
         Leitura e identificação de campos em documentos ou fotos.
       </p>
-      <div class="content row">
-        <div class="col col-10">
-          <div class="input-group mb-3 width">
-            <input type="file" id="fileInput">
-            <br>
-            <pre id="fileContent"></pre>
-        
-            <script>
-                const fileInput = document.getElementById('fileInput');
-                const fileContentDisplay = document.getElementById('fileContent');
-        
-                fileInput.addEventListener('change', function (event) {
-                    const file = event.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function (e) {
-                            const fileContent = e.target.result;
-                            fileContentDisplay.textContent = fileContent;
-                        };
-                        reader.readAsText(file);
-                    } else {
-                        fileContentDisplay.textContent = 'Nenhum arquivo selecionado.';
-                    }
-                });
-            </script>
-
-            <h1>OCR com Google Cloud Vision</h1>
     <input type="file" id="fileInput">
     <br>
     <img id="previewImage" style="max-width: 400px; max-height: 400px;">
