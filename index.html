@@ -70,71 +70,43 @@
       <p>
         Leitura e identificação de campos em documentos ou fotos.
       </p>
-    <input type="file" id="fileInput">
+       <input type="file" id="fileInput">
     <br>
-    <img id="previewImage" style="max-width: 400px; max-height: 400px;">
+    <div id="viewer"></div>
     <br>
     <button 
-      class="btn btn-primary btn-md mb-3"
-      onclick="performOCR()">
-          Realizar OCR
-    </button>
-    <br>
-    <pre id="ocrResult"></pre>
+      class="btn btn-outline-primary btn-md mb-3"
+      onclick="previewFile()">
+          Visualizar
+     </button>
 
     <script>
-        const fileInput = document.getElementById('fileInput');
-        const previewImage = document.getElementById('previewImage');
-        const ocrResultDisplay = document.getElementById('ocrResult');
+        function previewFile() {
+            const fileInput = document.getElementById('fileInput');
+            const viewer = document.getElementById('viewer');
+            viewer.innerHTML = ''; // Limpar conteúdo anterior (se houver).
 
-        fileInput.addEventListener('change', function (event) {
-            const file = event.target.files[0];
+            const file = fileInput.files[0];
             if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    previewImage.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            } else {
-                previewImage.src = '';
-            }
-        });
-
-        function performOCR() {
-            const base64Image = previewImage.src.split(',')[1];
-
-            fetch('https://vision.googleapis.com/v1/images:annotate?key=AIzaSyBqKPYXiV7BlP65rt4SbKmRHrCYAkqh7j0', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    "requests": [
-                        {
-                            "image": {
-                                "content": base64Image
-                            },
-                            "features": [
-                                {
-                                    "type": "TEXT_DETECTION"
-                                }
-                            ]
-                        }
-                    ]
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.responses && data.responses.length > 0 && data.responses[0].textAnnotations) {
-                    const ocrText = data.responses[0].textAnnotations[0].description;
-                    ocrResultDisplay.textContent = ocrText;
+                const fileType = file.type;
+                if (fileType.startsWith('image/')) {
+                    // Visualizar imagem
+                    const imageElement = document.createElement('img');
+                    imageElement.style.maxWidth = '400px';
+                    imageElement.style.maxHeight = '400px';
+                    imageElement.src = URL.createObjectURL(file);
+                    viewer.appendChild(imageElement);
                 } else {
-                    ocrResultDisplay.textContent = 'Não foi possível realizar o OCR.';
+                    // Visualizar documento
+                    const embedElement = document.createElement('embed');
+                    embedElement.style.width = '100%';
+                    embedElement.style.height = '500px';
+                    embedElement.src = URL.createObjectURL(file);
+                    viewer.appendChild(embedElement);
                 }
-            })
-            .catch(error => {
-                ocrResultDisplay.textContent = 'Ocorreu um erro na solicitação do OCR: ' + error.message;
-            });
+            } else {
+                viewer.innerHTML = 'Nenhum arquivo selecionado.';
+            }
         }
     </script>
        <div>
