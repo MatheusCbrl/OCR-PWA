@@ -80,12 +80,14 @@
           Visualizar
      </button>
       <button 
-      class="btn btn-outline-primary btn-md mb-3"
+      class="btn btn-primary btn-md mb-3"
       onclick="previewocr()">
           OCR
      </button>
       <br>
-    <pre id="ocrResult"></pre>
+      <div class="alert alert-danger" role="alert" id="ocrResult">
+     </div>
+    
 
     <script>
        function previewocr(){
@@ -125,7 +127,7 @@
             <button
               id="Informacoes"
               type="button"
-              class="btn btn-outline-primary btn-md mb-3"
+              class="btn btn-warning btn-md mb-3"
               data-toggle="modal"
               data-target="#exampleModal"
             >
