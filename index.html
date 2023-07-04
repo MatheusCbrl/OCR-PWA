@@ -79,8 +79,20 @@
       onclick="previewFile()">
           Visualizar
      </button>
+      <button 
+      class="btn btn-outline-primary btn-md mb-3"
+      onclick="previewocr()">
+          OCR
+     </button>
+      <br>
+    <pre id="ocrResult"></pre>
 
     <script>
+       function previewocr(){
+         const ocrResultDisplay = document.getElementById('ocrResult');
+
+         ocrResultDisplay.textContent = 'Não foi possível realizar o OCR.';
+       }
         function previewFile() {
             const fileInput = document.getElementById('fileInput');
             const viewer = document.getElementById('viewer');
